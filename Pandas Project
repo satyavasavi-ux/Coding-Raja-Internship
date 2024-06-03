@@ -1,0 +1,109 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load Data
+data = pd.read_csv('employee_data.csv')
+
+# Objective 1: How many Males/Females are there in the entire organization?
+gender_counts = data['Gender'].value_counts()
+print("Gender Counts:")
+print(gender_counts)
+
+# Objective 2: How many Males/Females are there in each department or for each location?
+department_gender_counts = data.groupby(['Department', 'Gender']).size().unstack(fill_value=0)
+location_gender_counts = data.groupby(['Location', 'Gender']).size().unstack(fill_value=0)
+print("\nDepartment Gender Counts:")
+print(department_gender_counts)
+print("\nLocation Gender Counts:")
+print(location_gender_counts)
+
+# Objective 3: For which department is the average Pay highest?
+average_pay_department = data.groupby('Department')['Salary'].mean().sort_values(ascending=False)
+print("\nAverage Pay by Department:")
+print(average_pay_department)
+
+# Objective 4: For which location is the average Pay highest?
+average_pay_location = data.groupby('Location')['Salary'].mean().sort_values(ascending=False)
+print("\nAverage Pay by Location:")
+print(average_pay_location)
+
+# Objective 5: What percentage of employees received good & very good rating? 
+# What about poor & very poor rating? and average rating?
+ratings = data['Ratings']
+total_employees = len(ratings)
+
+poor_rating_percentage = len(ratings[ratings <= 2]) / total_employees * 100
+average_rating_percentage = len(ratings[ratings == 3]) / total_employees * 100
+good_rating_percentage = len(ratings[ratings >= 4]) / total_employees * 100
+
+print(f"\nPoor rating: {poor_rating_percentage:.2f}%")
+print(f"Average rating: {average_rating_percentage:.2f}%")
+print(f"Good rating: {good_rating_percentage:.2f}%")
+
+# Objective 6: Compute gender pay gap for each department. Interpret
+gender_pay_gap_department = data.groupby(['Department', 'Gender'])['Salary'].mean().unstack()
+gender_pay_gap_department['Pay_Gap'] = gender_pay_gap_department['Male'] - gender_pay_gap_department['Female']
+print("\nGender Pay Gap by Department:")
+print(gender_pay_gap_department)
+
+# Objective 7: Compute gender pay gap for each location. Interpret
+gender_pay_gap_location = data.groupby(['Location', 'Gender'])['Salary'].mean().unstack()
+gender_pay_gap_location['Pay_Gap'] = gender_pay_gap_location['Male'] - gender_pay_gap_location['Female']
+print("\nGender Pay Gap by Location:")
+print(gender_pay_gap_location)
+
+# Additional Exercises
+
+# Visualization: Gender Distribution
+plt.figure(figsize=(10, 6))
+sns.countplot(data=data, x='Gender')
+plt.title('Gender Distribution')
+plt.show()
+
+# Visualization: Average Salary by Department
+plt.figure(figsize=(10, 6))
+sns.barplot(data=data, x='Department', y='Salary')
+plt.title('Average Salary by Department')
+plt.xticks(rotation=45)
+plt.show()
+
+# Visualization: Average Salary by Location
+plt.figure(figsize=(10, 6))
+sns.barplot(data=data, x='Location', y='Salary')
+plt.title('Average Salary by Location')
+plt.xticks(rotation=45)
+plt.show()
+
+# Statistical Methods
+
+# Gender & Location
+gender_location_crosstab = pd.crosstab(data['Gender'], data['Location'])
+print("\nGender & Location Crosstab:")
+print(gender_location_crosstab)
+
+# Gender & Department
+gender_department_crosstab = pd.crosstab(data['Gender'], data['Department'])
+print("\nGender & Department Crosstab:")
+print(gender_department_crosstab)
+
+# Gender & Rating
+gender_rating_crosstab = pd.crosstab(data['Gender'], data['Ratings'])
+print("\nGender & Rating Crosstab:")
+print(gender_rating_crosstab)
+
+# Gender & Salary
+gender_salary_stats = data.groupby('Gender')['Salary'].describe()
+print("\nGender & Salary Stats:")
+print(gender_salary_stats)
+
+# Location & Salary
+location_salary_stats = data.groupby('Location')['Salary'].describe()
+print("\nLocation & Salary Stats:")
+print(location_salary_stats)
+
+# Department & Salary
+department_salary_stats = data.groupby('Department')['Salary'].describe()
+print("\nDepartment & Salary Stats:")
+print(department_salary_stats)
