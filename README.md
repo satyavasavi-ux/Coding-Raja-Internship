@@ -11,7 +11,7 @@ OmniML Studio is an end-to-end machine learning optimization, batch gradient des
 ## Installation Instructions
 ```bash
 # Clone the repository
-git clone git@github.com:gandhikomarala/Coding-Raja-Internship.git
+git clone https://github.com/satyavasavi-ux/Coding-Raja-Internship.git
 cd Coding-Raja-Internship
 
 # Backend dependencies
